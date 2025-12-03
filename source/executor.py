@@ -8,7 +8,8 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def list_files(path: str):
 
-    full_path = os.getcwd() + os.sep + "data" + os.sep + "docs_corpus" + os.sep
+    full_path = os.getcwd() + f"\data\docs_corpus\{path}"
+    print(f"full path : {full_path}")
     result = []
     for root, dirs, files in os.walk(full_path):
         for f in files:
