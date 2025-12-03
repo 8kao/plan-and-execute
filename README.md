@@ -1,61 +1,112 @@
-🚀 Plan & Execute Agent
-Agent autonome capable de :
 
-Décomposer une tâche complexe (Task Planning)
+# Plan & Execute Agent
 
-Choisir dynamiquement les bons outils (Tool Selection)
+### Agent autonome inspiré des approches Anthropic / OpenAI Agents, capable de :
 
-Exécuter étape par étape (Execution Engine)
+- Décomposer automatiquement une tâche complexe  
+- Choisir dynamiquement les outils nécessaires  
+- Exécuter chaque étape de manière autonome  
+- Accumuler et exploiter un contexte multi-étapes  
+- Utiliser un moteur RAG interne (ChromaDB)  
+- Produire une réponse finale synthétique  
 
-Accumuler un contexte multi-étapes (Context Memory)
+---
 
-Utiliser le RAG interne pour enrichir l'analyse
+## Fonctionnalités
 
-Raffiner/mettre à jour son raisonnement
+### 1. Task Decomposition
+Lorsqu’on pose une tâche complexe :
 
-Générer une réponse finale synthétique
-
-Architecture inspirée des approches Anthropic (Claude 3.5) & OpenAI Agents (GPT-4o).
-
-🧠 Fonctionnalités principales
-1. Décomposition automatique des tâches (Task Decomposition)
-
-Lorsqu’on donne une tâche complexe comme :
-
-"Analyse le module geometry et compare avec physics"
+> "Analyse le module geometry et compare avec physics"
 
 Le système :
 
-Analyse la demande
+- Analyse la demande  
+- Génère des sous-tâches cohérentes  
+- Produit une liste numérotée prête à l'exécution  
 
-Détecte les sous-tâches nécessaires
+Exemple :
 
-Génère un plan séquentiel
+```
+1.   Lister les fichiers du module geometry
+    
+2.   Lire le fichier principal
+    
+3.   Lister les fichiers du module physics
+    
+4.   Comparer les deux structures
+    
+5.   Rédiger une synthèse
+```
 
-Forme une liste d’étapes numérotées
+### 2. Tool Selection
 
-Exemples d’étapes générées :
-
-1. Lister les fichiers du module geometry
-2. Lire le contenu du fichier principal
-3. Lister les fichiers du module physics
-4. Comparer les structures des deux modules
-5. Produire une synthèse finale
-
-
-Ce comportement est essentiel pour un agent autonome.
-
-2. Choix intelligent des outils (Tool Selection)
-
-Le LLM reçoit le plan et doit déterminer, pour chaque étape :
-
-quel outil utiliser
-
-avec quel input
+Le LLM choisit automatiquement quel outil utiliser pour chaque étape.
 
 Outils disponibles :
+- list_files : liste les fichiers d’un dossier 
+- read_file : lit le contenu d’un fichier
+- search : interrogation du RAG interne (ChromaDB)
 
-Tool	Description
-list_files	Explorer un dossier et récupérer ses fichiers
-read_file	Lire le contenu d’un fichier
-search	Faire un RAG interne sur la base vectorielle
+> Possibilité de rajouter des tools dans `source/executor.py`
+
+Le système détermine :
+
+- Quel tool convient  
+- Quel input lui passer  
+- Quand utiliser le RAG  
+- Quand réutiliser les résultats précédents
+
+### 3. Déroulement de l'exécution 
+Chaque étape du plan est réellement exécutée :
+
+- Le tool choisi est appelé  
+- Le résultat est capturé  
+- Le résultat est ajouté au contexte global  
+- Le système affiche chaque étape dans la console
+
+### 4. Context Memory
+
+Le système accumule :
+
+- les résultats intermédiaires  
+- les décisions précédentes  
+- le contenu des fichiers lus  
+- les outputs du RAG
+
+
+## Installation
+
+### 1. Installation des dépendances
+
+  `pip install -r requirements.txt`
+
+  
+
+### 2. Ajouter la clé API OpenAI
+
+Créer `.env` :
+
+ `cp .env.example .env`
+
+`OPENAI_API_KEY="votre_cle"`
+
+## Ingestion
+
+Places ton corpus de docs ou garde ceux déjà en place dans `data/docs_corpus`
+
+Lance :
+
+`python source/embed.py`
+
+>Note : si vous souhaitez recréer une base vectorielle, il vous suffit de supprimer la base dans le fichier `data/vector_db` puis de relancer `python source/embed.py`
+
+  
+## Utilisation de l'app
+
+Lance :
+
+`python source/plan_and_execute.py`
+
+
+
